@@ -8,33 +8,71 @@
 import SwiftUI
 
 struct DetailView: View {
-    var passedValue: String // Don't initialize it - It will be passed from the parent view
+    @State var toDo: String // Don't initialize it - It will be passed from the parent view
+    @State private var reminderIsOn = false
+//    @State private var dueDate = Date.now + 60*60*24
+    @State private var dueDate = Calendar.current.date(
+        byAdding: .day,
+        value: 1,
+        to: Date.now
+    )!
+    @State private var notes = ""
+    @State private var isCompleted = false
+    
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack {
-            Image(systemName: "swift")
-                .resizable()
-                .scaledToFit()
-                .foregroundStyle(.orange)
+        List {
+            TextField("Enter To Do here...", text: $toDo)
+                .font(.title)
+                .textFieldStyle(.roundedBorder)
+                .padding(.vertical)
+                .listRowSeparator(.hidden)
             
-            Text("You Are a Swifty Lengend!\nAnd You passed over the value \(passedValue)")
-                .font(.largeTitle)
-                .multilineTextAlignment(.center)
+            Toggle("Set Reminder:", isOn: $reminderIsOn)
+                .padding(.top)
+                .listRowSeparator(.hidden)
             
-            Spacer()
+            DatePicker("Date:", selection: $dueDate)
+                .listRowSeparator(.hidden)
+                .padding(.bottom)
+                .disabled(!reminderIsOn)
+                
+            Text("Notes:")
+                .padding(.top)
+
+            TextField("Notes...", text: $notes, axis: .vertical)
+                .textFieldStyle(.roundedBorder)
+                .listRowSeparator(.hidden)
             
-            Button("Get Back!") {
-                dismiss()
-            }
-            .buttonStyle(.borderedProminent)
+            Toggle("Set Reminder:", isOn: $isCompleted)
+                .padding(.top)
+                .listRowSeparator(.hidden)
+
         }
-        .padding()
-        
+        .listStyle(.plain)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Cancel") {
+                    dismiss()
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Save") {
+                    // Add Save Code Here
+                }
+            }
+            
+        }
 
     }
 }
 
 #Preview {
-    DetailView(passedValue: "Item 1")
+    NavigationStack {
+        DetailView(toDo: "")
+        
+    }
 }
