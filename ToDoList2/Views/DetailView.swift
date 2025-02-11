@@ -55,7 +55,7 @@ struct DetailView: View {
                 .textFieldStyle(.roundedBorder)
                 .listRowSeparator(.hidden)
             
-            Toggle("Set Reminder:", isOn: $isCompleted)
+            Toggle("Is Completed:", isOn: $isCompleted)
                 .padding(.top)
                 .listRowSeparator(.hidden)
         }
