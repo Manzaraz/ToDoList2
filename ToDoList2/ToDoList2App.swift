@@ -19,6 +19,10 @@ struct ToDoList2App: App {
     
     // Will allow us to find where our simulator data is saved:
     init() {
-        print(URL.applicationSupportDirectory.path(percentEncoded: false))
+        print(
+            URL.applicationSupportDirectory.path(
+                percentEncoded: false
+            )
+        )
     }
 }

@@ -10,10 +10,12 @@ import SwiftData
 
 struct ToDoListView: View {
     @Query var toDos: [ToDo]
+    /** 🔼 @Query - Fetches data from SwiftData's Model Container, so they can be displayed in SwiftUI Views
+        • Query variables will also "trigger View updates" on every change data (similar to how @State works). If you're Swift experienced, SwiftData classes are automatically "Observable" & "Identifiable". You don't add anything else to get this. */
 
     @State private var sheetIsPresented = false
-    @Environment(\.modelContext) var modelContect
-
+    
+    @Environment(\.modelContext) var modelContext
     
     var body: some View {
         NavigationStack {
@@ -23,10 +25,8 @@ struct ToDoListView: View {
                         DetailView(toDo: toDo)
                     } label: {
                         Text(toDo.item)
-                        
                     }
                     .font(.title2)
-
                 }
             }
             .navigationTitle("To Do List")
@@ -45,9 +45,9 @@ struct ToDoListView: View {
                 }
             }
         }
-    }
-    
+    }    
 }
+
 
 #Preview {
     ToDoListView()

@@ -8,6 +8,13 @@
 import SwiftUI
 import SwiftData
 
+// MARK: Important!
+/**
+ • .modelContainer - Handles managing our DataBase
+ • .modelContext - Holdes temporary changes with our data before they are saved.
+ 🚦 You'll create an @Environment variable for the .modelContext on each View that will handle modified data
+ */
+
 struct DetailView: View {
     @State var toDo: ToDo
     @State private var item =  ""
@@ -21,8 +28,7 @@ struct DetailView: View {
     @State private var notes = ""
     @State private var isCompleted = false
     
-    @Environment(\.modelContext) var modelContect
-    
+    @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -52,7 +58,6 @@ struct DetailView: View {
             Toggle("Set Reminder:", isOn: $isCompleted)
                 .padding(.top)
                 .listRowSeparator(.hidden)
-            
         }
         .listStyle(.plain)
         .onAppear() {
@@ -80,8 +85,8 @@ struct DetailView: View {
                     toDo.notes = notes
                     toDo.isCompleted = isCompleted
                     
-                    modelContect.insert(toDo)
-                    guard let _ = try? modelContect.save() else {
+                    modelContext.insert(toDo)
+                    guard let _ = try? modelContext.save() else {
                         print("🤬 Error: Save on DetailView did not work.")
                         return
                     }
@@ -89,9 +94,7 @@ struct DetailView: View {
                     dismiss()
                 }
             }
-            
-        }
-        
+        }        
     }
 }
 
