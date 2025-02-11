@@ -21,13 +21,45 @@ struct ToDoListView: View {
         NavigationStack {
             List {
                 ForEach(toDos) { toDo in
-                    NavigationLink {
-                        DetailView(toDo: toDo)
-                    } label: {
-                        Text(toDo.item)
+                    HStack {
+                        Image(systemName: toDo.isCompleted ? "checkmark.rectangle.portrait.fill" : "rectangle.portrait")
+                            .foregroundStyle(Color.accentColor)
+                            .onTapGesture {
+                                toDo.isCompleted.toggle()
+                                guard let _ = try? modelContext.save() else {
+                                    print("😡 ERROR: Save after .toggle on ToDoListView did not work.")
+                                    return
+                                }
+                            }
+                        
+                        NavigationLink {
+                            DetailView(toDo: toDo)
+                        } label: {
+                            Text(toDo.item)
+                        }
+                        .font(.title2)
                     }
-                    .font(.title2)
+                    .swipeActions { /* .swipeActions Technicque: used INSIDE a ForEach clause*/
+                        Button(role: .destructive) {
+                            modelContext.delete(toDo)
+                            
+                            guard let _ = try? modelContext.save() else {
+                                print("😡 ERROR: Save after .delete on ToDoListView did not work!")
+                                return
+                            }
+                        } label: {
+                            Label("Delete", systemImage: "trash.fill")
+                        }
+                    }
                 }
+//                .onDelete { indexSet in
+//                    indexSet.forEach { modelContext.delete(toDos[$0]) }
+//                    
+//                    guard let _ = try? modelContext.save() else {
+//                        print("😡 ERROR: Save after .delete did not work!")
+//                        return
+//                    }
+//                } /* .onDelete Technique: Use OUTSIDE a ForEach clause*/
             }
             .navigationTitle("To Do List")
             .navigationBarTitleDisplayMode(.automatic)
